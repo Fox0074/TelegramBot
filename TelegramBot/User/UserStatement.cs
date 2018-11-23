@@ -13,8 +13,8 @@ namespace TelegramBot
     public class UserStatement
     {
         public string direction;
-        public string date;
-        public string time;
+        public DateTime date = new DateTime();
+        public DateTime time = new DateTime();
         public string name;
         public string phoneNumber;
         public int count;
@@ -22,11 +22,11 @@ namespace TelegramBot
 
         public stadiya stadi = stadiya.направление;
 
+        private List<Rides> sample = new List<Rides>();
 
         public void DeleteStatement()
         {
             direction = "";
-            time = "";
             name = "";
             phoneNumber = "";
             count = 0;
@@ -37,6 +37,7 @@ namespace TelegramBot
 
         public async void StartStatement(Telegram.Bot.Types.Message message)
         {
+            sample.Clear();
             List<string> ways = new List<string>();
             foreach (Direction dir in Direction.directions)
             {
@@ -58,11 +59,16 @@ namespace TelegramBot
                 case stadiya.направление:
                     if (CheckDirection(message.Text))
                     {
-                        ReplyKeyboardMarkup ReplyKeyboard = new[]
-   {
-                            new[] { "27", "28" ,"29", "30" , "31"},
-                            new[] { "1", "2" ,"3", "4" , "5"},
-                            };
+                        List<string> answer = new List<string>();
+                        foreach (Rides ride in Rides.rides)
+                        {
+                            if ((ride.direction.from + "-" + ride.direction.to) == direction)
+                            {
+                                sample.Add(ride);
+                                answer.Add(ride.dateTime.Day.ToString()+"."+ ride.dateTime.Month.ToString());
+                            }
+                        }
+                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Выберите дату поездки",
@@ -73,11 +79,12 @@ namespace TelegramBot
                 case stadiya.дата:
                     if (CheckDate(message.Text))
                     {
-                        ReplyKeyboardMarkup ReplyKeyboard = new[]
-    {
-                            new[] { "11:00", "13:00" },
-                            new[] { "15:00", "18:00" },
-                            };
+                        List<string> answer = new List<string>();
+                        foreach (Rides ride in sample)
+                        {
+                            answer.Add(ride.dateTime.ToShortTimeString());
+                        }
+                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Выберите время",
@@ -85,11 +92,15 @@ namespace TelegramBot
                     }
                     else
                     {
-                        ReplyKeyboardMarkup ReplyKeyboard = new[]
-{
-                            new[] { "27", "28" ,"29", "30" , "31"},
-                            new[] { "1", "2" ,"3", "4" , "5"},
-                            };
+                        List<string> answer = new List<string>();
+                        foreach (Rides ride in Rides.rides)
+                        {
+                            if ((ride.direction.from + "-" + ride.direction.to) == direction)
+                            {
+                                answer.Add(ride.dateTime.Day.ToString() + "." + ride.dateTime.Month.ToString());
+                            }
+                        }
+                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Произошла ошибка, повторите ввод",
@@ -166,10 +177,23 @@ namespace TelegramBot
         {
             try
             {
-                int.Parse(value);
-                this.date = value;
-                stadi = stadiya.время;
-                return true;
+                List<Rides> buf = new List<Rides>();
+                foreach (Rides ride in sample)
+                {
+                    if ((ride.dateTime.Day.ToString() + "." + ride.dateTime.Month.ToString()) == value)
+                    {
+                        buf.Add(ride);
+                        date = ride.dateTime.Date;
+                        stadi = stadiya.время;   
+                    }
+                }
+                if (buf.Count > 0)
+                {
+                    sample = buf;
+                    return true;
+                }
+                return false;
+
             }
             catch
             {
@@ -179,7 +203,13 @@ namespace TelegramBot
 
         private void CheckTime(string value)
         {
-            this.time = value;
+            foreach (Rides ride in sample)
+            {
+                if (ride.dateTime.ToShortTimeString() == value)
+                {
+                    time = ride.dateTime;
+                }
+            }
             stadi = stadiya.места;
         }
 

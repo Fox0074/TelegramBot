@@ -64,5 +64,12 @@ namespace TelegramBot
             settings.Show();
             this.Hide();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            RidesSettings ridesSettings = new RidesSettings();
+            ridesSettings.Show();
+            this.Hide();
+        }
     }
 }

@@ -14,27 +14,10 @@ namespace TelegramBot
         public AutorizationForm()
         {
             InitializeComponent();
-            //Direction dir1 = new Direction();
-            //dir1.from = "Челябинск";
-            //dir1.to = "Куса";
-            //Direction dir2 = new Direction();
-            //dir2.from = "Куса";
-            //dir2.to = "Челябинск";
-            //Direction dir3 = new Direction();
-            //dir3.from = "Челябинск";
-            //dir3.to = "Миасс";
-            //Direction dir4 = new Direction();
-            //dir4.from = "Миасс";
-            //dir4.to = "Челябинск";
-
-            //Direction.directions.Add(dir1);
-            //Direction.directions.Add(dir2);
-            //Direction.directions.Add(dir3);
-            //Direction.directions.Add(dir4);
-            //Direction.SaveUserData();
             Direction.LoadUserData();
             Driver.LoadUserData();
             Bus.LoadUserData();
+            Rides.LoadRides();
         }
 
         private void button1_Click(object sender, EventArgs e)

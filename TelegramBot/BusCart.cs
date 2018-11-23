@@ -23,7 +23,7 @@ namespace TelegramBot
         {
             bus.name = textBox1.Text;
             bus.number = textBox2.Text;
-            Driver.SaveUserData();
+            Bus.SaveUserData();
             this.Close();
         }
     }
