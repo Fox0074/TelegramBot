@@ -37,11 +37,12 @@ namespace TelegramBot
 
         public async void StartStatement(Telegram.Bot.Types.Message message)
         {
-            ReplyKeyboardMarkup ReplyKeyboard = new[]
-{
-                    new[] { "Челябинск - Куса", "Челябинск - Миасс" },
-                    new[] { "Куса - Челябинск", "Миасс - Челябинск" },
-                    };
+            List<string> ways = new List<string>();
+            foreach (Direction dir in Direction.directions)
+            {
+                ways.Add(dir.from + "-" + dir.to);
+            }
+            ReplyKeyboardMarkup ReplyKeyboard = ways.ToArray();
             await BotBehaviour.Bot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Выберите маршрут",

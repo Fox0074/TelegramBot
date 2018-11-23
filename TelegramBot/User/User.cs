@@ -76,11 +76,18 @@ namespace TelegramBot
                                     /setline  - Забронировать место
                                     /deleteline - Отменить бронь 
                                     /break    - Прервать регистрацию";
-
-                    await BotBehaviour.Bot.SendTextMessageAsync(
-                        message.Chat.Id,
-                        usage,
-                        replyMarkup: new ReplyKeyboardRemove());
+                    try
+                    {
+                        await BotBehaviour.Bot.SendTextMessageAsync(
+                            message.Chat.Id,
+                            usage,
+                            replyMarkup: new ReplyKeyboardRemove());
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                     break;
             }
         }
