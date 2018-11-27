@@ -68,6 +68,15 @@ namespace TelegramBot
                                 answer.Add(ride.dateTime.Day.ToString()+"."+ ride.dateTime.Month.ToString());
                             }
                         }
+                        if (answer.Count <= 0)
+                        {
+                            isProcess = false;
+                            stadi = stadiya.направление;
+                            await BotBehaviour.Bot.SendTextMessageAsync(
+                           message.Chat.Id,
+                           "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
+                            return;
+                        }
                         ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
@@ -84,6 +93,15 @@ namespace TelegramBot
                         {
                             answer.Add(ride.dateTime.ToShortTimeString());
                         }
+                        if (answer.Count <= 0)
+                        {
+                            isProcess = false;
+                            stadi = stadiya.направление;
+                            await BotBehaviour.Bot.SendTextMessageAsync(
+                           message.Chat.Id,
+                           "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
+                            return;
+                        }
                         ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
@@ -99,6 +117,15 @@ namespace TelegramBot
                             {
                                 answer.Add(ride.dateTime.Day.ToString() + "." + ride.dateTime.Month.ToString());
                             }
+                        }
+                        if (answer.Count <= 0)
+                        {
+                            isProcess = false;
+                            stadi = stadiya.направление;
+                            await BotBehaviour.Bot.SendTextMessageAsync(
+                           message.Chat.Id,
+                           "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
+                            return;
                         }
                         ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
@@ -139,7 +166,7 @@ namespace TelegramBot
                     {
                         await BotBehaviour.Bot.SendTextMessageAsync(
                                message.Chat.Id,
-                               "Спасибо! Вы забронировались на рейс: " + date + " числа в " + time + " по направлению " + direction + ".Остались вопросы, напишите нам в чат @perevoz74");
+                               "Спасибо! Вы забронировались на рейс: " + date.Date + " числа в " + time.ToShortTimeString() + " по направлению " + direction + ".Остались вопросы, напишите нам в чат @perevoz74");
                         stadi = stadiya.направление;
                         await MailSender.SendEmailAsync(this);
                         isProcess = false;
