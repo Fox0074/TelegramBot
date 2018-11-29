@@ -161,6 +161,8 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "DriverCart";
             this.Text = "DriverCart";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

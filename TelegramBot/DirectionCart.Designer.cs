@@ -140,6 +140,8 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "DirectionCart";
             this.Text = "DirectionCart";
             this.ResumeLayout(false);

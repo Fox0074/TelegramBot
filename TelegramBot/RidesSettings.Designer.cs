@@ -157,6 +157,8 @@
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.dateTimePicker1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "RidesSettings";
             this.Text = "RidesSettings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RidesSettings_FormClosing);

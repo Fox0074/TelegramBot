@@ -102,7 +102,9 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
             this.Name = "AutorizationForm";
             this.Text = "UralBusBot";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutorizationForm_KeyDown);

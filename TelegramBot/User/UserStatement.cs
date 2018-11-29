@@ -20,9 +20,62 @@ namespace TelegramBot
         public int count;
         public bool isProcess = false;
 
-        public stadiya stadi = stadiya.направление;
+        public stadiya _stadi = stadiya.направление;
+        public stadiya stadi { get { return _stadi; } set { _stadi = value; pageNumber = 0; } }
+        private int pageNumber = 0;
 
         private List<Rides> sample = new List<Rides>();
+
+        private ReplyMarkupBase GetKeyboard(List<string> veriables, int page = 0)
+        {
+            ReplyKeyboardMarkup ReplyKeyboard;
+
+            if (veriables.Count < (page) * 10)
+            {
+                return ReplyKeyboard = "Назад" ;
+            }
+            if (page < 0)
+            {
+                return ReplyKeyboard= "Далее" ;
+            }
+            List<string> answer = new List<string>();
+
+            if (page != 0)
+            {
+                answer = (veriables.Count > (page + 1) * 10) ? veriables.GetRange(page * 10 + 1, 10) :
+                                                               veriables.GetRange(page * 10 + 1, veriables.Count - page * 10 - 1);
+                answer.Add("Назад");
+                if (veriables.Count > (page + 1) * 10) answer.Add("Дальше");
+            }
+            else
+            {
+                if (veriables.Count > 10)
+                {
+                    answer = veriables.GetRange(0, 11);
+                    answer.Add("Дальше");
+                }
+                else
+                {
+                    answer = veriables;
+                }
+            }
+
+            if (answer.Count > 11)
+            {
+                ReplyKeyboard = new[]
+                {
+                answer.GetRange(0,4).ToArray(),
+                answer.GetRange(4,4).ToArray(),
+                answer.GetRange(8,4).ToArray()
+                };
+            }
+            else
+            {
+                ReplyKeyboard = answer.ToArray();
+                ReplyKeyboard.ResizeKeyboard = true;
+            }
+            return ReplyKeyboard;
+        }
 
         public void DeleteStatement()
         {
@@ -43,17 +96,18 @@ namespace TelegramBot
             {
                 ways.Add(dir.from + "-" + dir.to);
             }
-            ReplyKeyboardMarkup ReplyKeyboard = ways.ToArray();
             await BotBehaviour.Bot.SendTextMessageAsync(
                 message.Chat.Id,
                 "Выберите маршрут",
-                replyMarkup: ReplyKeyboard);
+                replyMarkup: GetKeyboard(ways,pageNumber));
             isProcess = true;
         }
 
         public async void SetParams(Telegram.Bot.Types.Message message)
         {
-            
+            if (message.Text == "Дальше") pageNumber++;
+            if (message.Text == "Назад") pageNumber--;
+
             switch (stadi)
             {
                 case stadiya.направление:
@@ -77,11 +131,22 @@ namespace TelegramBot
                            "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
                             return;
                         }
-                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Выберите дату поездки",
-                            replyMarkup: ReplyKeyboard);
+                            replyMarkup: GetKeyboard(answer, pageNumber));
+                    }
+                    else
+                    {
+                        List<string> ways = new List<string>();
+                        foreach (Direction dir in Direction.directions)
+                        {
+                            ways.Add(dir.from + "-" + dir.to);
+                        }
+                        await BotBehaviour.Bot.SendTextMessageAsync(
+                            message.Chat.Id,
+                            "Выберите маршрут",
+                            replyMarkup: GetKeyboard(ways, pageNumber));
                     }
                     break;
 
@@ -102,11 +167,10 @@ namespace TelegramBot
                            "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
                             return;
                         }
-                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Выберите время",
-                            replyMarkup: ReplyKeyboard);
+                            replyMarkup: GetKeyboard(answer,pageNumber));
                     }
                     else
                     {
@@ -127,11 +191,10 @@ namespace TelegramBot
                            "Извините, на данный момент маршруты в этом направлении не зарегистрированы", replyMarkup: new ReplyKeyboardRemove());
                             return;
                         }
-                        ReplyKeyboardMarkup ReplyKeyboard = answer.ToArray();
                         await BotBehaviour.Bot.SendTextMessageAsync(
                             message.Chat.Id,
                             "Произошла ошибка, повторите ввод",
-                            replyMarkup: ReplyKeyboard);
+                            replyMarkup: GetKeyboard(answer,pageNumber));
                     }
                     break;
                 case stadiya.время:
@@ -184,20 +247,24 @@ namespace TelegramBot
 
         private bool CheckDirection(string value)
         {
-            value = value.Replace(" ", "");
-            string from = value.Split('-')[0];
-            string to = value.Split('-')[1];
-
-            foreach (Direction direction in Direction.directions)
+            try
             {
-                if (direction.from == from && direction.to == to)
+                value = value.Replace(" ", "");
+                string from = value.Split('-')[0];
+                string to = value.Split('-')[1];
+
+                foreach (Direction direction in Direction.directions)
                 {
-                    this.direction = value;
-                    stadi = stadiya.дата;
-                    return true;
+                    if (direction.from == from && direction.to == to)
+                    {
+                        this.direction = value;
+                        stadi = stadiya.дата;
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
+            catch { return false; }
         }
         
         private bool CheckDate(string value)

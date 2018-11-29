@@ -31,6 +31,15 @@ namespace TelegramBot
         {
             rides = (List<Rides>)XmlLoader.RearDataFromFile<List<Rides>>(ridesFile);
             if (rides == null) rides = new List<Rides>();
+
+            //Удаление просроченных поездок
+            foreach (Rides rider in rides)
+            {
+                if (rider.dateTime < DateTime.Now)
+                {
+                    rides.Remove(rider);
+                }
+            }
         }
 
         public static void SaveRides()

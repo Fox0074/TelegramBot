@@ -24,9 +24,7 @@ namespace TelegramBot
         {
             if (textBox1.Text == "Uralbus" && textBox2.Text == "1357")
             {
-                Main main = new Main();
-                main.Show();
-                this.Hide();
+                Sucsess();
             }
             else
             {
@@ -44,10 +42,16 @@ namespace TelegramBot
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.R)
             {
-                Main main = new Main();
-                main.Show();
-                this.Hide();
+                Sucsess();
             }
+        }
+
+        private void Sucsess()
+        {
+            Main main = new Main();
+            main.Show();
+            this.Hide();
+            new Client();
         }
     }
 }
